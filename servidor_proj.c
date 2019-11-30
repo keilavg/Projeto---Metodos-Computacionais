@@ -1,5 +1,7 @@
 #include "servidor_proj.h"
 
+#define PORTA 1317
+/*
 int inicia_e_le (uint16_t porta, FILE *arq){
 //inicia a operação e lê do arquivo os valores do ciclo, t_1, t_2 e max_desv
     int welcomeSocket, newSocket;
@@ -49,4 +51,42 @@ int inicia_e_le (uint16_t porta, FILE *arq){
 
     return newSocket;
 
+}*/
+
+//função inicaliza e lê do usuário os valores ciclo, t_1, t_2 e max_desv
+
+int inicia(uint16_t porta)
+{
+  int welcomeSocket, newSocket;
+  struct sockaddr_in serverAddr;
+
+  struct sockaddr_storage serverStorage;
+  socklen_t addr_size;
+
+float ciclo, t_1, t_2, max_desv; 
+
+
+
+  welcomeSocket = socket(PF_INET, SOCK_STREAM, 0);
+
+  serverAddr.sin_family = AF_INET;
+  serverAddr.sin_port = htons(porta);
+  serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+  memset(serverAddr.sin_zero, '\0', sizeof serverAddr.sin_zero);
+
+  bind(welcomeSocket, (struct sockaddr *) &serverAddr, sizeof(serverAddr));
+
+  if(listen(welcomeSocket,5)==0)
+    printf("Escutando...\n");
+  else
+    printf("Erro!\n");
+
+  addr_size = sizeof serverStorage;
+  newSocket = accept(welcomeSocket, (struct sockaddr *) &serverStorage, &addr_size);
+  
+  return newSocket;
+
 }
+
+
+
